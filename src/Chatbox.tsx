@@ -17,7 +17,8 @@ import {
   AtSign,
   Video,
   Mic,
-  SquareSlash,  SendHorizontal,
+  SquareSlash,
+  SendHorizontal,
 } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -137,8 +138,8 @@ function InputMessage({ channelName }: { channelName?: string }) {
         <div>cool</div>
         <div></div>
       </div>
-      <textarea className="w-full resize-none"
-        
+      <input
+        type="text"
         placeholder={`Message ${channelName || "#askorganizer"}`}
       />
       <div className="flex justify-between py-3 text-[#aeaeae] ">
