@@ -18,7 +18,6 @@ import {
   Video,
   Mic,
   SquareSlash,
-  SendHorizonal,
   SendHorizontal,
 } from "lucide-react";
 import type { ReactNode } from "react";
