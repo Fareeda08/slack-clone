@@ -21,4 +21,13 @@ li {
 
 .lucide{
   height: 18px;
+  width: 18px;
+}
+
+input{
+  width: stretch;
+}
+
+input:focus, textarea:focus{
+  outline: none;
 }
