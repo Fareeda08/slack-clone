@@ -10,24 +10,21 @@ li {
   list-style: none;
 }
 
-.menu-img {
-  width: 30px;
-}
-
 .btn {
   display: flex;
   align-items: center;
 }
 
-.lucide{
+.lucide {
   height: 18px;
   width: 18px;
 }
 
-input{
+input {
   width: stretch;
 }
 
-input:focus, textarea:focus{
+input:focus,
+textarea:focus {
   outline: none;
 }

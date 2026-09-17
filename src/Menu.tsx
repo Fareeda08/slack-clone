@@ -53,7 +53,7 @@ type ListProps = {
 function List({ children, menu }: ListProps) {
   return (
     <li className="flex flex-col items-center ">
-      <div className="menu-img">{children}</div>
+      {children}
       {menu && <p className="text-center">{menu}</p>}
     </li>
   );
