@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+aside{
+  display: flex;
+}
+
+body{
+  margin: 0;
+  color: #e9e7e7d9;
+  overflow: hidden;
+  font-size: 13px;
+}
+
+.app{
+  display: flex;
+  height: 100dvh;
+}
