@@ -31,7 +31,7 @@ import {
   CodeXml,
   SquareTerminal,
 } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import {type ReactNode } from "react";
 
 export default function Chatbox() {
   return (
@@ -49,17 +49,15 @@ export default function Chatbox() {
 }
 
 function Search() {
-  const [focus, setFocus] = useState(false)
 
   return (
     <div className="flex items-center justify-between p-1">
       <form className="w-[80%] flex items-center relative">
-      {!focus &&  <SearchIcon size={16} className="left-2 text-[#ffffffab] absolute" />}
+      <SearchIcon size={16} className="left-2 text-[#ffffffab] absolute" />
         <input
-          className={`w-full pt-[1px] ${!focus ? "pl-7" : "pl-2"} pr-2 pb-1 bg-[#78567b] rounded-sm text-white font-semibold`}
+          className={`w-full pt-[1px] pl-7 pr-2 pb-1 bg-[#78567b] rounded-sm text-white font-semibold`}
           type="text"
           placeholder="Search eutheafricajourney"
-          onFocus={() => setFocus(true)}
         />
       </form>
       <CircleQuestionMark />
