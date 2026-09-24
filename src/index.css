@@ -16,8 +16,13 @@ li {
 }
 
 .lucide {
-  height: 18px;
-  width: 18px;
+  height: 16px;
+  width: 16px;
+}
+
+.lucide-search{
+  height: 14px;
+  width: 14px;
 }
 
 input {
@@ -27,4 +32,15 @@ input {
 input:focus,
 textarea:focus {
   outline: none;
+}
+
+
+.lucide-plus{
+ height: 17px;
+ width: 17px;
+}
+
+.lucide-send-horizonal{
+height: 22px;
+ width: 22px;
 }

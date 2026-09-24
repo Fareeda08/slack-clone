@@ -19,8 +19,19 @@ import {
   Mic,
   SquareSlash,
   SendHorizontal,
+  Image,
+  Italic,
+  Strikethrough,
+  Underline,
+  Bold,
+  Link,
+  ListOrdered,
+  List,
+  TextQuote,
+  CodeXml,
+  SquareTerminal,
 } from "lucide-react";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 export default function Chatbox() {
   return (
@@ -38,13 +49,17 @@ export default function Chatbox() {
 }
 
 function Search() {
+  const [focus, setFocus] = useState(false)
+
   return (
-    <div className="flex items-center justify-between py-1">
-      <form className="w-[80%]">
+    <div className="flex items-center justify-between p-1">
+      <form className="w-[80%] flex items-center relative">
+      {!focus &&  <SearchIcon size={16} className="left-2 text-[#ffffffab] absolute" />}
         <input
-          className="w-full px-2 py-1 bg-[#78567b] rounded-sm text-white font-semibold"
+          className={`w-full pt-[1px] ${!focus ? "pl-7" : "pl-2"} pr-2 pb-1 bg-[#78567b] rounded-sm text-white font-semibold`}
           type="text"
           placeholder="Search eutheafricajourney"
+          onFocus={() => setFocus(true)}
         />
       </form>
       <CircleQuestionMark />
@@ -55,13 +70,15 @@ function Search() {
 function Nav({ channelName }: { channelName?: string }) {
   return (
     <nav>
-      <div className="flex items-center p-2 justify-between">
+      <div className="flex items-center p-2 px-4 justify-between">
         <div className="flex items-center gap-3">
           <Star />
           <p className="font-bold">{channelName || "#askorganizer"}</p>
-          <p>Ask anything from the organizers</p>
+          <p className=" text-[#ffffff80]">Ask anything from the organizers!</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 text-[#ffffff80]">
+          <Image />
+          <p className="mr-2">2.276</p>
           <span className="flex">
             <Headphones />
             <ChevronDown />
@@ -72,23 +89,26 @@ function Nav({ channelName }: { channelName?: string }) {
           <EllipsisVertical />
         </div>
       </div>
-      <ul className="flex pl-3 pr-4  border-b border-[#9a959557]">
-        <li className="flex  items-center border-b pb-3 pl-1">
+      <ul className="flex pl-3 pr-4 items-center  border-b border-[#9a959557]">
+        <li className="flex gap-1 items-center border-b pb-3 pl-1">
           <MessageCircle className="w-[16px]" />
           Messages
         </li>
-        <li className="flex  items-center pb-3 px-4">
+        <li className="flex gap-1  items-center pb-3 px-2.5">
           <FilePlusCorner />
           Add Canvas
         </li>
-        <li className="flex items-center pb-3 px-4">
+        <li className="flex gap-1 items-center pb-3 px-2.5">
           <Files />
           Files and Links
         </li>
-        <li className="flex  items-center pb-3 px-4">
+        <li className="flex gap-1  items-center pb-3 px-2.5">
           <Pin /> Pins
         </li>
-        <li> + </li>
+        <li className="pb-2 flex">
+          <Plus />
+          {/* <span className="p-1 bg-blue rounded-full">.</span>*/}
+        </li>
       </ul>
     </nav>
   );
@@ -97,7 +117,7 @@ function Nav({ channelName }: { channelName?: string }) {
 function ChatInfo() {
   return (
     <div className="pl-4 pr-4">
-      <h2 className="text-2xl">
+      <h2 className="text-2xl my-2">
         # <strong>askorganizer</strong>
       </h2>
       <p className="text-base">
@@ -111,10 +131,10 @@ function ChatInfo() {
       </p>
 
       <div className="flex gap-3 py-2">
-        <button className="flex items-center px-2 py-1 border-2 border-[#d8d3d33b] rounded-md">
+        <button className="flex gap-1 items-center px-2 py-1 border-2 border-[#d8d3d33b] rounded-md">
           <UserStar /> Add People to Channel
         </button>
-        <button className="flex items-center px-2 py-1 border-2 border-[#d8d3d33b] rounded-md">
+        <button className="flex gap-1 items-center px-2 py-1 border-2 border-[#d8d3d33b] rounded-md">
           <FilesIcon /> Pick a template
         </button>
       </div>
@@ -131,34 +151,40 @@ function ChatSpace({ messages }: { messages?: ReactNode }) {
 function InputMessage({ channelName }: { channelName?: string }) {
   return (
     <div className="my-5 p-2 border-2 border-[#d8d3d33b] rounded-md bg-[#1a1a1a57]">
-      <div className="flex pb-3  text-[#9a979794] divide-x-2">
-        <div>
-          <span>B</span> <em>I</em> <span>U</span> <span>S</span>
+      <div className="flex pb-3  text-[#9a979794] divide-x-2 text-[15px]">
+        <div className="flex gap-3 pr-3 items-center">
+          <Bold /> <Italic />
+          <Underline />
+          <Strikethrough />
         </div>
-        <div>cool</div>
-        <div></div>
+        <div className="flex gap-3 px-3">
+          <Link /> <ListOrdered /> <List />
+        </div>
+        <div className="flex gap-3 pl-3">
+          <TextQuote /> <CodeXml /> <SquareTerminal />
+        </div>
       </div>
       <input
         type="text"
         placeholder={`Message ${channelName || "#askorganizer"}`}
       />
-      <div className="flex justify-between py-3 text-[#aeaeae] ">
-        <div className="flex divide-x-2 gap-3">
-          <span className="flex">
-            <Plus />
-            <p>Aa</p>
+      <div className="flex justify-between pt-3 text-[#b8b3b3db] items-center">
+        <div className="flex divide-x gap-3 divide-[#3b3b3bb3] items-center">
+          <span className="flex gap-3 pr-2 items-center">
+            <Plus className="p-[0.5px] bg-[#706c6c40] rounded-full" />
+            <p className="underline text-[15px]">Aa</p>
             <SmileIcon />
             <AtSign />
           </span>
-          <span className="flex">
+          <span className="flex gap-4 pr-1 items-center border-red">
             <Video />
             <Mic />
           </span>
           <SquareSlash />
         </div>
-        <div className="flex divide-x-2">
-          <SendHorizontal />
-          <ChevronDown />
+        <div className="flex divide-x-2 divide-[#3b3b3bb3] items-center gap-2">
+          <SendHorizontal className="pr-2" />
+          <ChevronDown className="text-[#4a4949f7]" />
         </div>
       </div>
     </div>
