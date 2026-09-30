@@ -16,6 +16,9 @@ import {
   TextSearch,
   MessagesCircle,
 } from "lucide-react";
+import { channels } from "../public/data/channels";
+import { users } from "../public/data/users";
+import { useFrContext } from "./Context";
 
 export default function ConvoLog() {
   return (
@@ -109,11 +112,9 @@ function Chats({ user }: { user?: string }) {
         <li>
           <span className="rounded-sm border px-[5px] ">#</span> Channels
           <ul>
-            <Channel channelName="904 dufma" />
-            <Channel active={true} channelName="askorganizer" />
-            <Channel channelName="general" />
-            <Channel channelName="random" />
-            <Channel channelName="talkaboutyouridea" />
+            {channels.map((channel) => (
+              <Channel channelName={channel} />
+            ))}
           </ul>
         </li>
 
@@ -127,16 +128,21 @@ function Chats({ user }: { user?: string }) {
             <span className="rounded-sm bg-[#8a708c94] ">
               <User className="p-1" />
             </span>
-            {user || "Fawaz Abdulsalam"}{" "}
+            {user || "Fawaz Abdulsalam"}
             <span className="text-[#9a95959e]">you</span>
           </p>
+
+          <ul>
+            {users["user1"].friends.map((friend, index) => (
+              <Dms key={index} name={friend.name} id={friend.id} />
+            ))}
+          </ul>
         </li>
 
         <li>
           Agents & Apps
           <p className="ml-4 flex items-center gap-2">
-            <img src="slack_logo.png" alt="slack_logo" className="size-4"/>
-            
+            <img src="slack_logo.png" alt="slack_logo" className="size-4" />
             Slack
           </p>
         </li>
@@ -152,10 +158,30 @@ type channelType = {
 
 function Channel({ channelName, active }: channelType) {
   return (
-    <li
-      className={`pl-4 p-[1px] ${active && "bg-[#8f3694] rounded-sm font-semibold"}`}
-    >
+    <li className={`pl-4 p-[1px] ${active && "bg-[#8f3694] font-semibold"}`}>
       # {channelName}
+    </li>
+  );
+}
+
+function Dms({
+  name,
+  active,
+  id,
+}: {
+  name: string;
+  active?: boolean;
+  id: number;
+}) {
+
+  const { setCurFrId } = useFrContext()
+  
+  return (
+    <li
+      onClick={() => setCurFrId(id)}
+      className={`pl-4 p-[1px] ${active && "bg-[#8f3694] font-semibold"} pointer`}
+    >
+      {name}
     </li>
   );
 }

@@ -20,7 +20,7 @@ li {
   width: 16px;
 }
 
-.lucide-search{
+.lucide-search {
   height: 14px;
   width: 14px;
 }
@@ -34,13 +34,34 @@ textarea:focus {
   outline: none;
 }
 
-
-.lucide-plus{
- height: 17px;
- width: 17px;
+.lucide-plus {
+  height: 17px;
+  width: 17px;
 }
 
-.lucide-send-horizonal{
-height: 22px;
- width: 22px;
+.lucide-send-horizonal {
+  height: 22px;
+  width: 22px;
+}
+
+.messages {
+  scrollbar-width: thin;
+  scrollbar-color: #4c394e transparent;
+}
+
+.messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: #78567b;
+  border-radius: 999px;
+}
+
+.messages::-webkit-scrollbar-button {
+  display: none;
 }

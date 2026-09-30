@@ -1,16 +1,19 @@
 import './App.css'
 import Chatbox from './Chatbox'
+import Context from './Context'
 import Sidebar from './Sidebar'
 
 function App() {
  
 
   return (
-    <div className='app'>
-      <Sidebar />
-      <Chatbox/>
-    </div>
-  )
+    <Context>
+      <div className="app">
+        <Sidebar />
+        <Chatbox />
+      </div>
+    </Context>
+  );
 }
 
 export default App
