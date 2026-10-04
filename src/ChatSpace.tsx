@@ -81,7 +81,7 @@ function MessageCompositionDM({
         alt="profile_picture"
       />
 
-      <div className="flex-1 min-w-0 pr-64">
+      <div className="flex-1 min-w-0 pr-2">
         {/* Name + time */}
         <div className="flex gap-1 items-center">
           <p className="font-bold">{name}</p>
