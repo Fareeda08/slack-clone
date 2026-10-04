@@ -22,7 +22,7 @@ import {
 
 export default function InputMessage({ channelName }: { channelName?: string }) {
   return (
-    <div className="my-5 p-2 border-2 border-[#d8d3d33b] rounded-md bg-[#1a1a1a57] h-auto">
+    <div className="m-6 p-2 border-2 border-[#d8d3d33b] rounded-md bg-[#1a1a1a57] h-auto">
       <div className="flex pb-3  text-[#9a979794] divide-x-2 text-[15px]">
         <div className="flex gap-3 pr-3 items-center">
           <Bold /> <Italic />

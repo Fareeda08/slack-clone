@@ -3,23 +3,39 @@ import ChatSpace from "./ChatSpace";
 import InputMessage from "./InputMessage";
 import ChatInfo from "./ChatInfo";
 import Nav from "./Nav";
+import Profile from "./Profile";
 
 import { useFrContext } from "./Context";
+import { useState } from "react";
 
 export default function Chatbox() {
-  const { curConvo } = useFrContext();
+  const { curConvo: convo} = useFrContext();
+
+  const [viewProfile, setViewProfile] = useState(false);
+
+  function handleViewProfile() {
+    setViewProfile((prev) => !prev);
+  }
 
   return (
-    <div className="bg-[#251129] flex flex-col justify-between h-full pl-4">
-      <div className="h-auto">
+    <div className="bg-[#251129] flex flex-col flex-1 h-full min-h-0 min-w-0">
+     
         <Search />
-        <Nav />
-      </div>
+     
 
-      <ChatSpace />
-      <div className="h-auto">
-        {curConvo === "og" && <ChatInfo />}
-        <InputMessage />
+      <div className="flex flex-1 min-h-0 min-w-0">
+        <div className="flex flex-col flex-1 min-h-0 min-w-0 overflow-clip">
+          <Nav />
+          <ChatSpace onView={handleViewProfile} />
+          {convo === "organizations" && <ChatInfo />}
+          <InputMessage />
+        </div>
+
+        {viewProfile && convo === "dms" && (
+          <Profile
+            closeProfile={handleViewProfile}
+          />
+        )}
       </div>
     </div>
   );

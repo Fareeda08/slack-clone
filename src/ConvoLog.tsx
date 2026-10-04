@@ -16,7 +16,6 @@ import {
   TextSearch,
   MessagesCircle,
 } from "lucide-react";
-import { channels } from "../public/data/channels";
 import { users } from "../public/data/users";
 import { useFrContext } from "./Context";
 
@@ -25,7 +24,7 @@ export default function ConvoLog() {
     <div className="bg-[#4a0b4e] w-full">
       <Nav />
 
-      <div className="border border-[#d8d3d31f] rounded-tl-lg h-full">
+      <div className="border border-[#6b34341f] rounded-tl-lg h-full">
         <Welcome />
         <Chats />
       </div>
@@ -78,7 +77,11 @@ function Welcome() {
   );
 }
 
-function Chats({ user }: { user?: string }) {
+function Chats({ user = "user1" }: { user?: string }) {
+  const { selectedInfo, setSelectedInfo, setCurConvoId } = useFrContext();
+
+  const userInfo = users.user1;
+
   return (
     <div className="chats bg-[#1b0d1e] px-4 py-2 h-full mt-3 text-[#fcecff94]">
       <button className="flex p-2 rounded-lg border border-[#9a959557] w-full items-center justify-center gap-2 my-2 ">
@@ -110,10 +113,14 @@ function Chats({ user }: { user?: string }) {
           <p className="ml-4 mt-1">Drag and drop important stuff here</p>
         </li>
         <li>
-          <span className="rounded-sm border px-[5px] ">#</span> Channels
+          <span className="rounded-sm border px-1.25 ">#</span> Channels
           <ul>
-            {channels.map((channel) => (
-              <Channel channelName={channel} />
+            {users[user].organizations.map((channel) => (
+              <Channel
+                channelName={channel.name}
+                key={channel.id}
+                id={channel.id}
+              />
             ))}
           </ul>
         </li>
@@ -124,17 +131,41 @@ function Chats({ user }: { user?: string }) {
             Direct Messages
           </span>
 
-          <p className="ml-2 flex items-center p-2 gap-2">
+          <p
+            onClick={() => {
+              setSelectedInfo({
+                id: userInfo.id,
+                name: userInfo.name,
+                profilePic: userInfo.profilePic,
+                email:userInfo.email
+              });
+              setCurConvoId(0);
+            }}
+            className={`flex items-center px-2 py-0.5 gap-2 ${selectedInfo.id === 0 ? "bg-[#8f3694] font-semibold rounded-sm" : ""} cursor-pointer`}
+          >
             <span className="rounded-sm bg-[#8a708c94] ">
-              <User className="p-1" />
+              {userInfo.profilePic ? (
+                <img
+                  src={userInfo.profilePic}
+                  alt=""
+                  className="size-4 rounded-md"
+                />
+              ) : (
+                <User className="p-1" />
+              )}
             </span>
-            {user || "Fawaz Abdulsalam"}
+            {"Fawaz Abdulsalam"}
             <span className="text-[#9a95959e]">you</span>
           </p>
 
-          <ul>
-            {users["user1"].friends.map((friend, index) => (
-              <Dms key={index} name={friend.name} id={friend.id} />
+          <ul className="flex flex-col gap-1">
+            {users[user].dms.map((friend, index) => (
+              <Dms
+                key={index}
+                name={friend.name}
+                id={friend.id}
+                src={friend.profilePic}
+              />
             ))}
           </ul>
         </li>
@@ -153,34 +184,54 @@ function Chats({ user }: { user?: string }) {
 
 type channelType = {
   channelName: string;
-  active?: boolean;
+  id: number;
 };
 
-function Channel({ channelName, active }: channelType) {
+function Channel({ channelName, id }: channelType) {
+  const { setCurConvo, setCurConvoId, setSelectedInfo, selectedInfo } =
+    useFrContext();
+
   return (
-    <li className={`pl-4 p-[1px] ${active && "bg-[#8f3694] font-semibold"}`}>
+    <li
+      onClick={() => {
+        setCurConvo("organizations");
+        setCurConvoId(id);
+
+        const curInfo = users["user1"]?.["organizations"].find(
+          (convo) => convo.id === id,
+        );
+
+        if (curInfo) {
+          setSelectedInfo(curInfo);
+        }
+      }}
+      className={`pl-4 p-px ${selectedInfo.id === id && "bg-[#8f3694] font-semibold p-1 rounded-sm "} cursor-pointer`}
+    >
       # {channelName}
     </li>
   );
 }
 
-function Dms({
-  name,
-  active,
-  id,
-}: {
-  name: string;
-  active?: boolean;
-  id: number;
-}) {
-
-  const { setCurFrId } = useFrContext()
-  
+function Dms({ name, id, src }: { name: string; id: number; src: string }) {
+  const { setCurConvoId, setCurConvo, setSelectedInfo, selectedInfo } =
+    useFrContext();
   return (
     <li
-      onClick={() => setCurFrId(id)}
-      className={`pl-4 p-[1px] ${active && "bg-[#8f3694] font-semibold"} pointer`}
+      onClick={() => {
+        setCurConvo("dms");
+        setCurConvoId(id);
+
+        const curInfo = users["user1"]?.["dms"].find(
+          (convo) => convo.id === id,
+        );
+
+        if (curInfo) {
+          setSelectedInfo(curInfo);
+        }
+      }}
+      className={`pl-2 p-px ${selectedInfo.id === id && "bg-[#8f3694] font-semibold p-1 rounded-sm"} cursor-pointer flex items-center gap-2`}
     >
+      {src ? <img src={src} alt="" className="size-5 rounded-md" /> : <User />}
       {name}
     </li>
   );
