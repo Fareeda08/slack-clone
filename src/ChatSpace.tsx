@@ -74,7 +74,7 @@ function MessageCompositionDM({
   });
 
   return (
-    <div className="relative flex gap-6 bg-[#36193c63] p-1 pl-4">
+    <div className="group/message relative flex gap-6 bg-[#36193c63] p-1 pl-4">
       <img
         className="size-12.5 rounded-full"
         src={selectedInfo?.profilePic}
@@ -97,7 +97,7 @@ function MessageCompositionDM({
       </div>
 
       {/* Actions */}
-      <div className="absolute -top-5 right-7 flex gap-5 items-center border border-[#36193ca8] rounded-md p-1.5 bg-[#36193c36]">
+      <div className="absolute -top-5 right-7 hidden group-hover/message:flex gap-5 items-center border border-[#36193ca8] rounded-md p-1.5 bg-[#36193c36]">
         <Action info="Add reaction">
           <FaceSlightlySmilingPlus />
         </Action>
@@ -124,11 +124,13 @@ function MessageCompositionDM({
 
 function Action({ info, children }: { info: string; children: ReactNode }) {
   return (
-    <div className="group relative">
-      <span className="absolute -left-1/2 bottom-full mb-2 -translate-x-1/2 opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap border border-zinc-800 rounded-md p-1.5">
+    <div className="group/action relative">
+      <span className="absolute -left-1/2 bottom-full mb-2 -translate-x-1/2 opacity-0 transition-opacity group-hover/action:opacity-100 whitespace-nowrap border border-zinc-800 rounded-md p-1.5">
         {info}
       </span>
-      <button>{children}</button>
+      <button className="transition-[stroke-width] duration-150 group-hover/action:[&>svg]:stroke-3">
+        {children}
+      </button>
     </div>
   );
 }

@@ -30,7 +30,7 @@ export default function Context({ children }: { children: ReactNode }) {
   const [curConvo, setCurConvo] = useState<ConversationType>("dms");
 
   const [selectedInfo, setSelectedInfo] = useState<SelectedInfo>({
-    name: "",
+    name: "Fawaz Abdulsalam",
     id: 0,
     profilePic: "",
     time: "",
