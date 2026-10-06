@@ -125,7 +125,7 @@ export default function Thread({
           </div>
         </div>
 
-        <div className="absolute top-3 right-9 flex  gap-5 items-center border border-gray-400/20 rounded-md p-1.5 bg-[#36193c36] opacity-0 group-hover/thread:opacity-100">
+        <div className="absolute top-7 right-5 flex  gap-5 items-center border border-gray-400/20 rounded-md p-1.5 opacity-0 group-hover/thread:opacity-100 bg-fuchsia-950">
           <Action info="Add reaction" id={selectedMessageID!}>
             <FaceSlightlySmilingPlus />
           </Action>
