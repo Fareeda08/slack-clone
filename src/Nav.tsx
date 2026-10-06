@@ -18,9 +18,9 @@ import { useFrContext } from "./Context";
 import { users } from "../public/data/users";
 
 export default function Nav() {
-  const { selectedInfo, curConvo: convo } = useFrContext();
+  const { selectedFriendInfo, curConvo: convo } = useFrContext();
 
-  const userInfo = users.user1
+  const userInfo = users.user1;
 
   return (
     <nav>
@@ -29,16 +29,16 @@ export default function Nav() {
           <Star />
 
           {convo === "organizations" ? (
-            <p className="font-bold">{selectedInfo.name}</p>
-          ) : convo === "dms" && selectedInfo.id === 0 ? (
+            <p className="font-bold">{selectedFriendInfo.name}</p>
+          ) : convo === "dms" && selectedFriendInfo.id === 0 ? (
             <FriendMiniscle
               name={userInfo?.name}
               profilePic={userInfo?.profilePic}
             />
           ) : (
             <FriendMiniscle
-              name={selectedInfo?.name}
-              profilePic={selectedInfo?.profilePic}
+              name={selectedFriendInfo?.name}
+              profilePic={selectedFriendInfo?.profilePic}
             />
           )}
 

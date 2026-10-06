@@ -1,27 +1,31 @@
+/* eslint-disable react-refresh/only-export-components */
 import {
   Bookmark,
+  ChevronDown,
   EllipsisVertical,
   FaceSlightlySmilingPlus,
   Forward,
   MessageCircleMore,
-  User,
 } from "lucide-react";
 
 import { conversations } from "../public/data/conversations";
 import { useFrContext } from "./Context";
-import { type ReactNode } from "react";
-import { users } from "../public/data/users";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import UserIntro from "./UserIntro";
+import MoreActions from "./MoreActions";
 
 type MessageType = { message: string; id: number; createdAt: string };
 
 export default function ChatSpace({
   user = "user1",
-  onView,
+  onViewThread,
+  onViewProfile,
 }: {
   user?: keyof typeof conversations;
-  onView: () => void;
+  onViewThread: () => void;
+  onViewProfile: () => void;
 }) {
-  const { selectedInfo, curConvoId, curConvo: convo } = useFrContext();
+  const { selectedFriendInfo, curConvoId, curConvo: convo } = useFrContext();
 
   const messages =
     curConvoId !== null
@@ -35,37 +39,54 @@ export default function ChatSpace({
       <div className="flex flex-col flex-1 gap-7 overflow-y-auto min-h-0 min-w-0 messages overflow-x-hidden">
         {convo === "dms" && (
           <UserIntro
-            name={selectedInfo?.name}
-            profilePic={selectedInfo?.profilePic}
-            viewUserProfile={onView}
+            name={selectedFriendInfo?.name}
+            profilePic={selectedFriendInfo?.profilePic}
+            viewUserProfile={onViewProfile}
           />
         )}
 
-        {messages?.map(function (message) {
+        {messages?.map((message, index) => {
+          const currentDate = new Date(message.createdAt);
+
+          const previousDate =
+            index > 0 ? new Date(messages[index - 1].createdAt) : null;
+
+          const showDate =
+            index === 0 ||
+            currentDate.toDateString() !== previousDate?.toDateString();
+
           if (convo === "dms") {
             return (
               <MessageCompositionDM
-                selectedInfo={selectedInfo}
                 key={message.id}
+                selectedFriendInfo={selectedFriendInfo}
                 mes={message}
-                name={selectedInfo?.name}
+                name={selectedFriendInfo.name}
+                onViewThread={onViewThread}
+                showDate={showDate}
               />
             );
           }
         })}
+
+       
       </div>
     </div>
   );
 }
 
 function MessageCompositionDM({
-  selectedInfo,
+  selectedFriendInfo,
   mes,
   name,
+  onViewThread,
+  showDate,
 }: {
-  selectedInfo: { name: string; id: number; profilePic?: string };
+  selectedFriendInfo: { name: string; id: number; profilePic?: string };
   mes: MessageType;
   name: string;
+  onViewThread: () => void;
+  showDate: boolean;
 }) {
   const time = new Date(mes.createdAt).toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -73,112 +94,186 @@ function MessageCompositionDM({
     hour12: true,
   });
 
-  return (
-    <div className="group/message relative flex gap-6 bg-[#36193c63] p-1 pl-4">
-      <img
-        className="size-12.5 rounded-full"
-        src={selectedInfo?.profilePic}
-        alt="profile_picture"
-      />
+  const [viewMoreActions, setViewMoreActions] = useState(false);
 
-      <div className="flex-1 min-w-0 pr-2">
-        {/* Name + time */}
-        <div className="flex gap-1 items-center">
-          <p className="font-bold">{name}</p>
-          <p>{time}</p>
+  const messageRef = useRef<HTMLDivElement>(null);
+
+  function handleViewMoreActions() {
+    setViewMoreActions(!viewMoreActions);
+  }
+
+  useEffect(() => {
+    if (!viewMoreActions || !messageRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) {
+          setViewMoreActions(false);
+        }
+      },
+      {
+        threshold: 0,
+      },
+    );
+
+    observer.observe(messageRef.current);
+
+    return () => observer.disconnect();
+  }, [viewMoreActions]);
+
+  const day = new Date(mes.createdAt).toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
+
+  const date = mes && new Date(mes.createdAt).getDate();
+
+  const dateSuffix =
+    day &&
+    (date % 10 === 1 && date !== 11
+      ? "st"
+      : date % 10 === 2 && date !== 12
+        ? "nd"
+        : date % 10 === 3 && date !== 13
+          ? "rd"
+          : "th");
+
+  return (
+    <div>
+      {showDate && (
+        <div className="flex items-center justify-center w-full mb-10">
+          <hr />
+          <div className="flex items-center justify-center py-1.5 px-4 border border-fuchsia-900/40 rounded-4xl">
+            <p className="text-center">
+              {day}
+              {dateSuffix}
+            </p>
+            <ChevronDown />
+          </div>
+          <hr />
+        </div>
+      )}
+
+      <div
+        ref={messageRef}
+        className="group/message relative flex gap-6 bg-[#36193c63] p-1 pl-4"
+      >
+        <img
+          className="size-12.5 rounded-full"
+          src={selectedFriendInfo?.profilePic}
+          alt="profile_picture"
+        />
+
+        <div className="flex-1 min-w-0 pr-2">
+          {/* Name + time */}
+          <div className="flex gap-1 items-center">
+            <p className="font-bold">{name}</p>
+            <p>{time}</p>
+          </div>
+
+          {/* Message */}
+          {mes.message?.split("\n").map((line, index) => (
+            <p key={index} className="py-1">
+              {formatMessage(line)}
+            </p>
+          ))}
         </div>
 
-        {/* Message */}
-        {mes.message?.split("\n").map((line, index) => (
-          <p key={index} className="py-1">
-            {formatMessage(line)}
-          </p>
-        ))}
-      </div>
+        {/* Actions */}
+        <div
+          className={`absolute -top-5 right-7 flex  gap-5 items-center border border-[#36193ca8] rounded-md p-1.5 bg-[#36193c36] ${
+            viewMoreActions ? "flex" : "hidden group-hover/message:flex"
+          }`}
+        >
+          <Action info="Add reaction" id={mes.id}>
+            <FaceSlightlySmilingPlus />
+          </Action>
 
-      {/* Actions */}
-      <div className="absolute -top-5 right-7 hidden group-hover/message:flex gap-5 items-center border border-[#36193ca8] rounded-md p-1.5 bg-[#36193c36]">
-        <Action info="Add reaction">
-          <FaceSlightlySmilingPlus />
-        </Action>
+          <Action info="Reply in thread" handleClick={onViewThread} id={mes.id}>
+            <MessageCircleMore />
+          </Action>
 
-        <Action info="Reply in thread">
-          <MessageCircleMore />
-        </Action>
+          <Action info="Forward message..." id={mes.id}>
+            <Forward />
+          </Action>
 
-        <Action info="Forward message...">
-          <Forward />
-        </Action>
+          <Action info="Save for later" id={mes.id}>
+            <Bookmark />
+          </Action>
 
-        <Action info="Save for later">
-          <Bookmark />
-        </Action>
+          <div className="relative">
+            <Action
+              info="More actions"
+              handleClick={handleViewMoreActions}
+              viewMoreActions={viewMoreActions}
+              id={mes.id}
+            >
+              <EllipsisVertical />
+            </Action>
 
-        <Action info="More actions">
-          <EllipsisVertical />
-        </Action>
+            {viewMoreActions && <MoreActions onClick={setViewMoreActions} />}
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
-function Action({ info, children }: { info: string; children: ReactNode }) {
-  return (
-    <div className="group/action relative">
-      <span className="absolute -left-1/2 bottom-full mb-2 -translate-x-1/2 opacity-0 transition-opacity group-hover/action:opacity-100 whitespace-nowrap border border-zinc-800 rounded-md p-1.5">
-        {info}
-      </span>
-      <button className="transition-[stroke-width] duration-150 group-hover/action:[&>svg]:stroke-3">
-        {children}
-      </button>
-    </div>
-  );
-}
-
-function UserIntro({
-  profilePic,
-  name,
-  viewUserProfile,
+export function Action({
+  info,
+  children,
+  handleClick,
+  id,
+  viewMoreActions,
 }: {
-  profilePic?: string;
-  name: string;
-  viewUserProfile: () => void;
+  info: string;
+  children: ReactNode;
+  handleClick?: () => void;
+  id: number;
+  viewMoreActions?: boolean;
 }) {
-  const userInfo = users.user1;
+  const { setSelectedMessageID } = useFrContext();
+
+  const moreActionsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!viewMoreActions) return;
+
+    function handleClickOutside(event: PointerEvent) {
+      if (
+        moreActionsRef.current &&
+        !moreActionsRef.current.contains(event.target as Node)
+      ) {
+        handleClick?.();
+      }
+    }
+
+    document.addEventListener("pointerdown", handleClickOutside);
+
+    return () =>
+      document.removeEventListener("pointerdown", handleClickOutside);
+  }, [viewMoreActions, handleClick]);
 
   return (
-    <div className="flex gap-4 flex-col pt-10 pl-4">
-      <div className="flex gap-4 items-center">
-        {profilePic || userInfo.profilePic ? (
-          <img
-            src={profilePic || userInfo.profilePic}
-            alt="profile_picture"
-            className="size-30"
-          />
-        ) : (
-          <User />
-        )}
-        <p className="font-semibold">{name || userInfo.name}</p>
-      </div>
-
-      <p>
-        This message is just between {<span className="text-sky-600 bg-sky-700/20">@{name || userInfo.name}</span>} and you. Check out their profile to learn more about them
-      </p>
-
+    <div ref={moreActionsRef} className="relative w-fit">
       <button
         onClick={() => {
-          viewUserProfile();
-          console.log("clicked");
+          setSelectedMessageID(id);
+          handleClick?.();
         }}
-        className="w-fit bg-[#36193c63] p-2 border border-fuchsia-900 rounded-md"
+        className="peer transition-[stroke-width] duration-150 hover:[&>svg]:stroke-3"
       >
-        View profile
+        {children}
       </button>
+
+      <span className="pointer-events-none absolute -left-1/2 bottom-full mb-2 -translate-x-1/2 opacity-0 whitespace-nowrap border border-zinc-800 rounded-md p-1.5 transition-opacity peer-hover:opacity-100">
+        {info}
+      </span>
     </div>
   );
 }
-
-function formatMessage(text: string) {
+export function formatMessage(text: string) {
   return text.split(/(@\S+|https?:\/\/\S+)/g).map((part, index) => {
     if (part.startsWith("@")) {
       return (

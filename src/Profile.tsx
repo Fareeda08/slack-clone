@@ -12,14 +12,12 @@ import { users } from "../public/data/users";
 import { useFrContext } from "./Context";
 
 export default function Profile({
-  
   closeProfile,
 }: {
- 
   closeProfile: () => void;
-  }) {
+}) {
   const userInfo = users.user1;
-  const { selectedInfo } = useFrContext();
+  const { selectedFriendInfo } = useFrContext();
 
   return (
     <div className="p-2 w-1/3 border-l border-fuchsia-950">
@@ -29,23 +27,23 @@ export default function Profile({
       </div>
       <div className="flex flex-col gap-3 mb-4">
         <img
-          src={selectedInfo.profilePic || userInfo.profilePic}
+          src={selectedFriendInfo.profilePic || userInfo.profilePic}
           alt="profile_picture"
           className="h-55 w-53 self-center"
         />
 
         <h2 className="font-bold text-xl">
-          {selectedInfo.name || userInfo.name}
+          {selectedFriendInfo.name || userInfo.name}
         </h2>
         <p className="flex gap-2 items-center">
           <span className="p-1 flex w-fit bg-green-600 rounded-full" />
           Active
         </p>
         <span className="p-0.5 bg-purple-800 rounded-full flex w-fit">
-          <Check /> 
+          <Check />
         </span>
         <p className="flex items-center gap-2">
-          <Clock /> {selectedInfo.time || "4:05 PM"} local time
+          <Clock /> {selectedFriendInfo.time || "4:05 PM"} local time
         </p>
 
         <div className="flex items-center gap-2">
@@ -74,7 +72,7 @@ export default function Profile({
           <p className="flex flex-col">
             <span>Email Address</span>
             <span className="text-sky-600 m-0 p-0">
-              {selectedInfo.email || userInfo.email}
+              {selectedFriendInfo.email || userInfo.email}
             </span>
           </p>
         </div>
@@ -85,11 +83,11 @@ export default function Profile({
 
         <p className="flex gap-2 items-center pl-2">
           <img
-            src={selectedInfo.profilePic || userInfo.profilePic}
+            src={selectedFriendInfo.profilePic || userInfo.profilePic}
             alt=""
             className="size-5 rounded-full"
           />{" "}
-          {selectedInfo.name || userInfo.name}
+          {selectedFriendInfo.name || userInfo.name}
         </p>
       </div>
     </div>
