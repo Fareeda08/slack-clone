@@ -1,16 +1,11 @@
 import { conversations } from "../public/data/conversations";
-import { formatMessage } from "./ChatSpace";
+import { formatMessage, Action } from "./ChatSpace";
 import { EllipsisVertical, Hash, X } from "lucide-react";
 import { useFrContext } from "./Context";
 import InputMessage from "./InputMessage";
 import { useEffect, useState } from "react";
-import { Action } from "./ChatSpace";
 
-import {
-  Bookmark,
-  FaceSlightlySmilingPlus,
-  Forward,
-} from "lucide-react";
+import { Bookmark, FaceSlightlySmilingPlus, Forward } from "lucide-react";
 
 export default function Thread({
   handleClick: viewThread,
@@ -21,11 +16,12 @@ export default function Thread({
   const [highlight, setHighLight] = useState(true);
 
   const { selectedFriendInfo, selectedMessageID } = useFrContext();
+
   const mes = conversations["user1"]["dms"][selectedFriendInfo.id].find(
     (message) => message.id === selectedMessageID,
   );
 
-  useEffect(function () {
+  useEffect(() => {
     const timer = setTimeout(() => setHighLight(false), 2000);
 
     return () => clearTimeout(timer);
@@ -63,6 +59,7 @@ export default function Thread({
       <div className="flex justify-between p-4">
         <p className="font-bold text-lg">Thread</p>
         <button></button>
+
         <div className="flex items-center gap-5">
           <EllipsisVertical />
           <X onClick={() => viewThread(false)} />
@@ -87,7 +84,7 @@ export default function Thread({
           <div className="flex-1 min-w-0 pr-2">
             <div className="flex gap-1 items-center">
               <p className="font-bold">{selectedFriendInfo.name}</p>
-              <p>
+              <p className="text-[6px]">
                 {date}
                 {dateSuffix} at {time}
               </p>
@@ -101,8 +98,8 @@ export default function Thread({
                 {mes?.message !== undefined &&
                 mes?.message.length > 60 &&
                 !clipText
-                  ? mes?.message
-                      ?.slice(0, 350)
+                  ? mes.message
+                      .slice(0, 350)
                       .split("\n")
                       .map((line, index) => (
                         <p key={index} className="py-1">
@@ -115,6 +112,7 @@ export default function Thread({
                       </p>
                     ))}
               </div>
+
               <p
                 onClick={() => setClipText((prev) => !prev)}
                 className="text-sky-600 cursor-pointer"
@@ -125,7 +123,18 @@ export default function Thread({
           </div>
         </div>
 
-        <div className="absolute top-7 right-5 flex  gap-5 items-center border border-gray-400/20 rounded-md p-1.5 opacity-0 group-hover/thread:opacity-100 bg-fuchsia-950">
+        {/* Thread actions */}
+        <div
+          className="
+            absolute top-5 right-5 z-50
+            flex gap-4 items-center
+            border border-gray-400/20
+            rounded-md p-1.5
+            bg-fuchsia-950
+            invisible
+            group-hover/thread:visible
+          "
+        >
           <Action info="Add reaction" id={selectedMessageID!}>
             <FaceSlightlySmilingPlus />
           </Action>
@@ -147,6 +156,7 @@ export default function Thread({
           </Action>
         </div>
       </div>
+
       <InputMessage location="thread" />
     </div>
   );
